@@ -79,9 +79,9 @@ namespace GarageManager
         }
 
         // Search the garage for vehicles
-        //public Vehicle SearchGarage()
-        //{
+        public Vehicle SearchGarage()
+        {
 
-        //}
+        }
     }
 }

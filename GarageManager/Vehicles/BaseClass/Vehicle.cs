@@ -12,8 +12,6 @@ namespace GarageManager.Vehicles.BaseClass
     public class Vehicle : IVehicle
     {
         private string registrationNumber;
-        //private int maxSpeed;
-
 
         public string RegistrationNumber { get; set; }
         public string Colour { get; set; }
@@ -30,7 +28,7 @@ namespace GarageManager.Vehicles.BaseClass
 
         public override string ToString()
         {
-            return $"Name: {GetType().Name} Colour: {Colour} Number of wheels: {NumberOfWheels} Registration number: {RegistrationNumber}";
+            return $"Type: {GetType().Name} Colour: {Colour} Number of wheels: {NumberOfWheels} Registration number: {RegistrationNumber} ";
         }
     }
 }

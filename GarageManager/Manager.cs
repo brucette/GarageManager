@@ -130,7 +130,7 @@ namespace GarageManager
                 case MenuHelpers.Get:
                     break;
                 case MenuHelpers.View:
-
+                    garagehandler.DisplayAllVehicles(garage);
                     break;
                 case MenuHelpers.Search:
                     break;
