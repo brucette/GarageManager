@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace GarageManager.Helpers
@@ -46,6 +47,31 @@ namespace GarageManager.Helpers
             Console.ForegroundColor = color;
             Console.WriteLine(text);
             Console.ResetColor();
+        }
+
+        public static IEnumerable<string> GetSearchTerms() 
+        {
+            string terms = AskForInput("Enter properties to search:");
+
+            string[] pairs = terms.Split(',');
+
+            IEnumerable<string> searchTerms = pairs.Select(pair => pair.Substring(0, pair.IndexOf(':')));
+
+            return searchTerms;   
+        }
+
+        public static bool IsValid(IEnumerable<string> searchTerms, Dictionary<string, string> validSearchTerms)
+        {
+            ICollection<string> keys = validSearchTerms.Keys;
+
+            foreach (string pair in searchTerms)
+            {
+                if (keys.Contains(pair))
+                    validSearchTerms[pair] = pair;
+                else 
+                    return false;
+            }
+            return true;
         }
     }
 }

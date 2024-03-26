@@ -50,22 +50,7 @@ namespace GarageManager
                 if (vehicles[i] == null)
                     availableSpots.Add(i);
             };
-            //availableSpots = vehicles.Where(x => x == null)
-            //.Select(x => Array.IndexOf(vehicles, x)).ToList();
         }
-
-        //public List<int> AvailableSpots
-        //{
-        //    get { return availableSpots; }
-        //    set 
-        //    {
-        //        foreach (T vehicle in vehicles)
-        //        {
-        //            if (vehicle == null)
-        //                availableSpots.Add(Array.IndexOf(vehicles, vehicle));
-        //        };
-        //    }
-        //}
 
         public bool isFull => availableSpots.Count == 0;
 
@@ -77,7 +62,7 @@ namespace GarageManager
             Console.WriteLine($"length of array: {vehicles.Length}");
             Name = name;
             GetAvailableSpots(vehicles);
-            printAvailableSpots();
+            //printAvailableSpots();
 
             Util.PrintWithColour($"{Name} garage created!", ConsoleColor.Green);
         }
@@ -86,10 +71,10 @@ namespace GarageManager
         {
             //garageName = name;
             numberOfSpots = capacity;
-            vehicles = new T[numberOfSpots];
+            vehicles = new T[numberOfSpots];  
             Name = name;
             GetAvailableSpots(vehicles);
-            printAvailableSpots();
+            //printAvailableSpots();
 
             foreach (T vehicle in toBepopluated)
             {
@@ -120,10 +105,10 @@ namespace GarageManager
                 Util.PrintWithColour("Vehicle was parked!", ConsoleColor.Green);
 
                 // CHECK:
-                Console.WriteLine("Available spots after parking: ");
-                printAvailableSpots();
-                Console.WriteLine("Garage: ");
-                printGarage();
+                //Console.WriteLine("Available spots after parking: ");
+                //printAvailableSpots();
+                //Console.WriteLine("Garage: ");
+                //printGarage();
         }
 
         public void RemoveVehicle(T vehicle, string registrationNumber)
@@ -135,6 +120,32 @@ namespace GarageManager
             // CHECK:
             Console.WriteLine("Garage: ");
             printGarage();
+        }
+
+        public void FilterVehicles(Dictionary<string, string> validSearchTerms)
+        {
+            string colour        = validSearchTerms["colour"];
+            string typeOfVehicle = validSearchTerms["typeOfVehicle"];
+            uint numberOfWheels;
+            uint.TryParse(validSearchTerms["numberOfWheels"], out numberOfWheels);
+
+
+            //    // Loop through the dictionary
+            //    foreach (KeyValuePair<string, string> kvp in validSearchTerms)
+            //    {
+            //        string key = kvp.Key;
+            //        string value = kvp.Value;
+            //        if (key == "numberOfWheels")
+            //        {
+            //            uint.TryParse(key, out uint converted);
+            //        }
+            //        Console.WriteLine($"Key: {key}, Value: {value}");
+            //    }
+
+            IEnumerable<T> found = vehicles.Where(
+                vehicle => vehicle.Colour.ToLower() == colour
+                && vehicle.GetType().Name.ToLower() == typeOfVehicle
+                && vehicle.NumberOfWheels == numberOfWheels);
         }
 
         public void ShowVehicleDetails()

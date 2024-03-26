@@ -18,7 +18,8 @@ namespace GarageManager
 
         void DisplayAllVehicles(Garage<IVehicle> garage);
 
-        Vehicle SearchGarage();
+        //Vehicle SearchGarage();
+        void SearchGarage(Garage<IVehicle> garage);
 
     }
 }

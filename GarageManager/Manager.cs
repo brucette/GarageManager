@@ -64,7 +64,8 @@ namespace GarageManager
             switch (popluate.ToLower())
             {
                 case "y":
-                    List<IVehicle> vehiclesToPopulate = GenerateVehicles();
+                    //List<IVehicle> vehiclesToPopulate = GenerateVehicles();
+                    List<IVehicle> vehiclesToPopulate = SeedVehicles();
                     garage = garagehandler.CreateGarage(name, capacity, vehiclesToPopulate);
                     break;
                 case "n":
@@ -103,12 +104,25 @@ namespace GarageManager
             return vehiclesToAdd;
         }
 
+        public static List<IVehicle> SeedVehicles()
+        {
+            List<IVehicle> vehiclesToAdd = new List<IVehicle>()
+            {
+                new Airplane("ABC123", "white", 8, 4),
+                new Boat("ABD124", "white", 0, 40),
+                new Bus("ABE125", "green", 6, 50),
+                new Car("BEZ924", "yellow", 4, "gasoline"),
+                new Motorcycle("DJO368", "black", 2, 200),
+                new Airplane("KBRC893", "blue", 8, 4),
+                new Boat("DLM354", "green", 0, 30),
+                new Bus("RLP921", "green", 6, 50),
+                new Car("SXB704", "yellow", 4, "gasoline"),
+                new Motorcycle("GFW037", "black", 2, 200)
+            };
+            return vehiclesToAdd;
+        }
 
-
-        // **** If vehicles are to be automatically populated ****
-
-
-        public static void ManageExistingGarage(GarageHandler garagehandler)
+    public static void ManageExistingGarage(GarageHandler garagehandler)
         {
             Console.WriteLine("Enter the name of the garage you want to manage: ");
 
@@ -133,6 +147,7 @@ namespace GarageManager
                     garagehandler.DisplayAllVehicles(garage);
                     break;
                 case MenuHelpers.Search:
+                    garagehandler.SearchGarage(garage);
                     break;
                 default:
                     break;
