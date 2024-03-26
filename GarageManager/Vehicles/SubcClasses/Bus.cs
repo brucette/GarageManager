@@ -17,5 +17,11 @@ namespace GarageManager.Vehicles.SubcClasses
         {
             NumberOfSeats = numberOfSeats;
         }
+
+        public override string ToString()
+        {
+            string baseProperties = base.ToString();
+            return baseProperties + $"Number of seats: {NumberOfSeats}\n";
+        }
     }
 }

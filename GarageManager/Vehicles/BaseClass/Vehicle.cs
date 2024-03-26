@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace GarageManager.Vehicles.BaseClass
 {
@@ -25,6 +26,11 @@ namespace GarageManager.Vehicles.BaseClass
             Colour = colour;
             NumberOfWheels = numberOfWheels;
             //MaxSpeed = maxSpeed;
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {GetType().Name} Colour: {Colour} Number of wheels: {NumberOfWheels} Registration number: {RegistrationNumber}";
         }
     }
 }

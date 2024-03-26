@@ -10,21 +10,19 @@ namespace GarageManager
     {
         private readonly uint numberOfSpots;
         private T[] vehicles;
-        public string garageName;
+        //public string garageName;
         public List<int> availableSpots = new List<int>();
         public string Name { get; set; }
 
         // ******************************************************
         public void printAvailableSpots()
         {
-            //for (int i = 0; i < availableSpots.Count; i++)
-            //{
-            //    Console.WriteLine(i);
-            //}
-            foreach(var item in availableSpots) 
+            Console.WriteLine(" Available spots in the list");
+            foreach (var item in availableSpots) 
             {
-                Console.WriteLine(item);
+                Console.WriteLine($" {item}");
             }
+            Console.WriteLine();
         }
         public void printGarage()
         {
@@ -39,6 +37,11 @@ namespace GarageManager
         // ******************************************************
 
         public int Length => vehicles.Length;
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
 
         public void GetAvailableSpots(T[] vehicles)
         {
@@ -64,13 +67,14 @@ namespace GarageManager
         //    }
         //}
 
-        public bool isFull => availableSpots.Count < 1;
+        public bool isFull => availableSpots.Count == 0;
 
         public Garage(string name, uint capacity)
         {
-            garageName = name;
+            //garageName = name;
             numberOfSpots = capacity;
             vehicles = new T[numberOfSpots];
+            Console.WriteLine($"length of array: {vehicles.Length}");
             Name = name;
             GetAvailableSpots(vehicles);
             printAvailableSpots();
@@ -80,17 +84,16 @@ namespace GarageManager
         
         public Garage(string name, uint capacity, List<IVehicle> toBepopluated)
         {
-            garageName = name;
+            //garageName = name;
             numberOfSpots = capacity;
             vehicles = new T[numberOfSpots];
             Name = name;
+            GetAvailableSpots(vehicles);
+            printAvailableSpots();
 
-
-            int index = 0;
             foreach (T vehicle in toBepopluated)
             {
-                vehicles[index] = vehicle;
-                index++;
+                AddVehicle(vehicle);
             }
 
             Util.PrintWithColour($"{Name} garage created and vehicle(s) successfully added!", ConsoleColor.Green);
@@ -110,30 +113,26 @@ namespace GarageManager
 
         public void AddVehicle(T vehicle) 
         {
-            if (isFull)
-            {
-                Console.WriteLine("Sorry, the garage is full!");
-            }
-            else
-            {
                 int firstAvailableSpot = availableSpots[0];
                 vehicles[firstAvailableSpot] = vehicle;
                 availableSpots.RemoveAt(0);
-                Console.WriteLine("Vehicle was parked!");
+            
+                Util.PrintWithColour("Vehicle was parked!", ConsoleColor.Green);
 
                 // CHECK:
                 Console.WriteLine("Available spots after parking: ");
                 printAvailableSpots();
                 Console.WriteLine("Garage: ");
                 printGarage();
-            }
         }
 
         public void RemoveVehicle(T vehicle, string registrationNumber)
         {
             int locationOfVehicle = Array.IndexOf(vehicles, vehicle);
             vehicles[locationOfVehicle] = default;
-            Console.WriteLine("Vehicle removed!");
+            Util.PrintWithColour("Vehicle removed from garage!", ConsoleColor.Green);
+            
+            // CHECK:
             Console.WriteLine("Garage: ");
             printGarage();
         }

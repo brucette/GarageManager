@@ -16,5 +16,11 @@ namespace GarageManager.Vehicles.SubcClasses
         {
             Fueltype = fueltype;
         }
+
+        public override string ToString()
+        {
+            string baseProperties = base.ToString();
+            return baseProperties + $"Fuel type: {Fueltype}\n";
+        }
     }
 }

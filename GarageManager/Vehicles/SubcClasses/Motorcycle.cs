@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GarageManager.Vehicles.BaseClass;
+using Microsoft.VisualBasic.FileIO;
 
 namespace GarageManager.Vehicles.SubcClasses
 {
@@ -15,6 +16,12 @@ namespace GarageManager.Vehicles.SubcClasses
             : base(registrationNumber, colour, numberOfWheels)
         {
             CylinderVolume = cylinderVolume;
+        }
+
+        public override string ToString()
+        {
+            string baseProperties = base.ToString();
+            return baseProperties + $"Cylinder volume: {CylinderVolume}\n";
         }
     }
 }

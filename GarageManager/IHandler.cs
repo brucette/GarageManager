@@ -12,7 +12,7 @@ namespace GarageManager
     {
         public Garage<IVehicle> CreateGarage(string name, uint capacity);
 
-        void Park(Garage<IVehicle> garage, IVehicle vehicle);
+        void Park(Garage<IVehicle> garage, Func<IVehicle> vehicle);
 
         void GetVehicle(Garage<IVehicle> garage, IVehicle vehicle);
 

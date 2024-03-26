@@ -53,7 +53,8 @@ namespace GarageManager
         {
             //GarageHandler garagehandler = new GarageHandler();
 
-            Console.WriteLine("Please enter the following details");
+            Console.WriteLine("\nPlease enter the following details");
+
             string name = Util.AskForInput("Enter a name for your garage: ");
             uint capacity = Util.AskForNumber("How many spots should the garage have?: ");
             string popluate = Util.AskForInput("Would you like to populate the garage with some vehicles? (y/n): ");
@@ -64,7 +65,7 @@ namespace GarageManager
             {
                 case "y":
                     List<IVehicle> vehiclesToPopulate = GenerateVehicles();
-                     garage = garagehandler.CreateGarage(name, capacity, vehiclesToPopulate);
+                    garage = garagehandler.CreateGarage(name, capacity, vehiclesToPopulate);
                     break;
                 case "n":
                     garage = garagehandler.CreateGarage(name, capacity);
@@ -72,6 +73,19 @@ namespace GarageManager
                 default:
                     break;
             }
+        }
+
+        public static IVehicle GetVehicle()
+        {
+            MenuHelpers.GetVehicleType();
+            string type = Console.ReadLine();
+
+            string color = Util.AskForInput("Color: ");
+            uint numberOfWheels = Util.AskForNumber("Number of wheels: ");
+
+            IVehicle newVehicle = VehicleFactory.MakeVehicle(type, color, numberOfWheels);
+
+            return newVehicle;
         }
 
         // If user is to enter vehicles
@@ -83,19 +97,13 @@ namespace GarageManager
             for (int i = 0; i < numberOfVehicles; i++)
             {
                 Console.WriteLine($"Select type for vehicle {i + 1}:");
-                MenuHelpers.GetVehicleType();
-                string type = Console.ReadLine();
-
-                string color = Util.AskForInput("Color: ");
-                uint numberOfWheels = Util.AskForNumber("Number of wheels: ");
-
-                IVehicle newVehicle = VehicleFactory.MakeVehicle(type, color, numberOfWheels);
-
+                IVehicle newVehicle = GetVehicle();
                 vehiclesToAdd.Add(newVehicle);
-
             }
             return vehiclesToAdd;
         }
+
+
 
         // **** If vehicles are to be automatically populated ****
 
@@ -106,22 +114,23 @@ namespace GarageManager
 
             garagehandler.DisplayExistingGarages();
             string garageName = Console.ReadLine();
+            Garage<IVehicle> garage = garagehandler.garageDirectory[garageName];
 
-            Console.WriteLine($"{garageName} it is!");
+            //Console.WriteLine($"{garageName} it is!");
 
             MenuHelpers.ShowOperationMenu();
             string operation = Console.ReadLine();
-
-            Console.WriteLine($"{operation} it is!");
+            //Console.WriteLine($"{operation} it is!");
 
             switch (operation)
             {
                 case MenuHelpers.Park:
-                    //garagehandler.garageDirectory[garageName];
+                    garagehandler.Park(garage, GetVehicle);
                     break;
                 case MenuHelpers.Get:
                     break;
                 case MenuHelpers.View:
+
                     break;
                 case MenuHelpers.Search:
                     break;

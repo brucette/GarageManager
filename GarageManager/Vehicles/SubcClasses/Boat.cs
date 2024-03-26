@@ -17,5 +17,11 @@ namespace GarageManager.Vehicles.SubcClasses
         {
             Length = length;
         }
+
+        public override string ToString()
+        {
+            string baseProperties = base.ToString();
+            return baseProperties + $"Length: {Length}\n";
+        }
     }
 }

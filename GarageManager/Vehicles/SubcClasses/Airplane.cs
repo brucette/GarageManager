@@ -16,5 +16,11 @@ namespace GarageManager.Vehicles.SubcClasses
         {
             NumberOfEngines = numberOfEngines;
         }
+
+        public override string ToString()
+        {
+            string baseProperties = base.ToString();
+            return baseProperties + $"Number of engines: {NumberOfEngines}\n";
+        }
     }
 }

@@ -23,25 +23,14 @@ namespace GarageManager
                 garages.Append($"Name: {item.Key}, ");
             }
 
-            if (garageDirectory.Count > 0)
-            {
-                // Remove the trailing comma
-                garages.Length--; // Removes the last character (comma)
-            }
+            //if (garageDirectory.Count > 0)
+            //{
+            //    // Remove the trailing comma
+            //    garages.Length--; // Removes the last character (comma)
+            //}
             garages.Append("]");
 
             Util.PrintWithColour($"Current garages in the system: {garages.ToString()}", ConsoleColor.Cyan);
-
-            //{
-            //    Console.WriteLine($"{number}. {item.Key}");
-            //    number++;
-            //}
-            //int number = 1;
-            //foreach (var item in garageDirectory)
-            //{
-            //    Console.WriteLine($"{number}. {item.Key}");
-            //    number++;
-            //}
         }
 
         public Garage<IVehicle> CreateGarage(string name, uint capacity)
@@ -59,9 +48,17 @@ namespace GarageManager
         }
 
         // Park a vehicle
-        public void Park(Garage<IVehicle> garage, IVehicle vehicle)
+        public void Park(Garage<IVehicle> garage, Func<IVehicle> vehicle)
         {
-            garage.AddVehicle(vehicle);
+            if (garage.isFull)
+            {
+                Console.WriteLine("Sorry, the garage is full!");
+            }
+            else
+            {
+                IVehicle newVehicle = vehicle();
+                garage.AddVehicle(newVehicle);
+            }
         }
 
         // Get a vehicle
@@ -76,7 +73,7 @@ namespace GarageManager
             foreach (IVehicle vehicle in garage)
             {
                 if (vehicle != null)
-                    Console.WriteLine("Balrgh");
+                    Console.WriteLine(vehicle.ToString());
                 //Console.WriteLine($"Type: {vehicle.GetType().Name}");
             }
         }
