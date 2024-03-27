@@ -27,7 +27,10 @@ namespace GarageManager
                         break;
                     case MenuHelpers.Manage:
                         //** CHECK THAT GARAGE EXISTS**//
-                        ManageExistingGarage(garage, garagehandler);
+                        if(garage != null)
+                            ManageExistingGarage(garage, garagehandler);
+                        else
+                            ui.Print("No garages exist yet, please create one.");
                         break;
                     case MenuHelpers.Quit:
                         ui.Print("Thank you and Goodbye!");
@@ -75,8 +78,6 @@ namespace GarageManager
 
             string color = Util.AskForInput("Color: ");
 
-            //** CHECK THAT NUMBER != EXIST **//
-            //string registrationNumber = Util.AskForInput("Registration number: ");
             string registrationNumber = garagehandler.CheckRegistrationNumber(garage);
             uint numberOfWheels = Util.AskForNumber("Number of wheels: ");
 
@@ -85,7 +86,7 @@ namespace GarageManager
             return newVehicle;
         }
 
-        // If user is to enter vehicles
+        // When user is to enter vehicles
         public List<IVehicle> GenerateVehicles()
         {
             uint numberOfVehicles = Util.AskForNumber("How many vehicles?: ");
@@ -100,6 +101,7 @@ namespace GarageManager
             return vehiclesToAdd;
         }
 
+        // For testing purposes:
         public List<IVehicle> SeedVehicles()
         {
             List<IVehicle> vehiclesToAdd = new List<IVehicle>()
@@ -138,7 +140,7 @@ namespace GarageManager
                     garagehandler.DisplayAllVehicles(garage);
                     break;
                 case MenuHelpers.Search:
-                    //garagehandler.SearchGarage();
+                    garagehandler.SearchGarage(garage);
                     break;
                 default:
                     break;

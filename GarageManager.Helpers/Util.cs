@@ -48,30 +48,5 @@ namespace GarageManager.Helpers
             Console.WriteLine(text);
             Console.ResetColor();
         }
-
-        public static IEnumerable<string> GetSearchTerms() 
-        {
-            string terms = AskForInput("Enter properties to search:");
-
-            string[] pairs = terms.Split(',');
-
-            IEnumerable<string> searchTerms = pairs.Select(pair => pair.Substring(0, pair.IndexOf(':')));
-
-            return searchTerms;   
-        }
-
-        public static bool IsValid(IEnumerable<string> searchTerms, Dictionary<string, string> validSearchTerms)
-        {
-            ICollection<string> keys = validSearchTerms.Keys;
-
-            foreach (string pair in searchTerms)
-            {
-                if (keys.Contains(pair))
-                    validSearchTerms[pair] = pair;
-                else 
-                    return false;
-            }
-            return true;
-        }
     }
 }

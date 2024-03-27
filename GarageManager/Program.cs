@@ -10,11 +10,10 @@ namespace GarageManager
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello!");
+            Console.WriteLine("Welcome to the Garage Manager");
 
                 var manager = new Manager();
                 manager.Start();
-        
         }
     }
 }

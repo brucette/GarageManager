@@ -10,12 +10,6 @@ namespace GarageManager.UserInterface
 {
     internal class ConsoleUI : IUI
     {
-
-        public ConsoleUI()
-        {
-            
-        }
-
         public void Print(string text)
         {
             Console.WriteLine(text);
@@ -28,7 +22,5 @@ namespace GarageManager.UserInterface
             Console.ResetColor();
             return input;
         }
-
-        
     }
 }

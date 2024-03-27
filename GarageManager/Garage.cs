@@ -6,12 +6,12 @@ using System.Text;
 
 namespace GarageManager
 {
-    // HAVE IEnumerable<T> ON Garage OR ON IVehicle?? 
     public class Garage<T> : IEnumerable<T> where T : IVehicle
     {
         private readonly uint numberOfSpots;
         private T[] vehicles;
-
+        public int Length => vehicles.Length;   
+       
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -88,7 +88,6 @@ namespace GarageManager
 
         public void RemoveVehicle(string registrationNumber)
         {
-            //int locationOfVehicle = Array.IndexOf(vehicles, vehicle);
             bool vehicleInGarage = SearchByRegistration(registrationNumber);
 
             if (vehicleInGarage)
@@ -107,31 +106,78 @@ namespace GarageManager
             }
         }
 
+        //ToDo
         public void FilterVehicles(Dictionary<string, string> validSearchTerms)
         {
-            string colour        = validSearchTerms["colour"];
-            string typeOfVehicle = validSearchTerms["typeOfVehicle"];
-            uint numberOfWheels;
-            uint.TryParse(validSearchTerms["numberOfWheels"], out numberOfWheels);
+            // SEARCH FUNCTION NOT QUITE WORKING YET
 
-            //    // Loop through the dictionary
-            //    foreach (KeyValuePair<string, string> kvp in validSearchTerms)
-            //    {
-            //        string key = kvp.Key;
-            //        string value = kvp.Value;
-            //        if (key == "numberOfWheels")
-            //        {
-            //            uint.TryParse(key, out uint converted);
-            //        }
-            //        Console.WriteLine($"Key: {key}, Value: {value}");
-            //    }
+            string colour = "";
+            string typeOfVehicle = "";
+            uint convertedNumWheels;
 
-            IEnumerable<T> found = vehicles.Where(
-                vehicle => vehicle.Colour.ToLower() == colour
-                && vehicle.GetType().Name.ToLower() == typeOfVehicle
-                && vehicle.NumberOfWheels == numberOfWheels);
+            IEnumerable<T> foundByColour;
+            IEnumerable<T> foundByType;
+            IEnumerable<T> foundByNumWheels;
+
+            List<IEnumerable<T>> found = new();
+
+            // Loop through the dictionary
+            foreach (KeyValuePair<string, string> kvp in validSearchTerms)
+            {
+                string key = kvp.Key;
+                string value = kvp.Value;
+
+                if (key == "numberOfWheels")
+                {
+                    uint.TryParse(value, out convertedNumWheels);
+                    Console.WriteLine($"Converted is now {convertedNumWheels}");
+                    foundByNumWheels = vehicles.Where(vehicle => vehicle?.NumberOfWheels == convertedNumWheels);
+
+                    if (foundByNumWheels.Any())
+                        found.Add(foundByNumWheels);
+                }
+                else if (key == "colour")
+                {
+                    colour = value;
+                    Console.WriteLine($"Colour is now {colour}");
+                    foundByColour = vehicles.Where(vehicle => vehicle?.Colour.ToLower() == colour);
+
+                    if (foundByColour.Any())
+                        found.Add(foundByColour);
+
+                }
+                else if (key == "typeOfVehicle")
+                {
+                    typeOfVehicle = value;
+                    Console.WriteLine($"typeOfVehicle is now {typeOfVehicle}");
+                    foundByType = vehicles.Where(vehicle => vehicle?.GetType().Name.ToLower() == typeOfVehicle);
+
+                    if (foundByType.Any())
+                        found.Add(foundByType);
+                }
+                Console.WriteLine($"Key: {key}, Value: {value}");
+            }
+
+            //IEnumerable<T> found = vehicles.Where(
+            //    vehicle => vehicle?.Colour.ToLower() == colour
+            //    && vehicle?.GetType().Name.ToLower() == typeOfVehicle
+            //    && vehicle?.NumberOfWheels == convertedNumWheels);
+
+            if (found.Count == 0)
+            { 
+                Console.WriteLine("Sorry nothing found!");
+            }
+            else
+            {
+                foreach (IEnumerable<T> list in found)
+                {
+                    foreach (T vehicle in list)
+                        Console.WriteLine(vehicle.ToString());
+                }
+            }
         }
 
+        //ToDo
         public void ShowVehicleDetails()
         {
             foreach (var item in vehicles)

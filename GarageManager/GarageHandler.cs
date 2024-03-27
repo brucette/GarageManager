@@ -91,24 +91,34 @@ namespace GarageManager
             }
         }
 
-
         // Search the garage for vehicles
         public void SearchGarage(Garage<IVehicle> garage)
         {
-            Dictionary<string, string> validSearchTerms = new();
-            validSearchTerms.Add("colour", "");
-            validSearchTerms.Add("numberOfWheels", "");
-            validSearchTerms.Add("typeOfVehicle", "");
+            List<string> validSearchTerms = new List<string>() { "colour", "numberOfWheels", "typeOfVehicle" };
 
+            Dictionary<string, string> searchTerms = new();
 
             MenuHelpers.ShowSearchInstructions();
-            IEnumerable<string> searchTerms = Util.GetSearchTerms();
+            string input = Util.AskForInput("Enter properties to search: ");
 
-            bool isValid = Util.IsValid(searchTerms, validSearchTerms);
-           
-            
-            // IEnumerable<Vehicle>
-            
+            string[] pairs = input.Split(',');
+
+            foreach (string pair in pairs) 
+            {
+                string property = pair.Substring(0, pair.IndexOf(':'));
+
+                if (validSearchTerms.Contains(property))
+                {
+                    string searchFor = pair.Substring(pair.IndexOf(':'));
+
+                    // remove colon
+                    searchFor = searchFor.Substring(1);
+
+                    searchTerms.Add(property, searchFor);
+                }
+            }
+          
+            garage.FilterVehicles(searchTerms);
         }
     }
 }

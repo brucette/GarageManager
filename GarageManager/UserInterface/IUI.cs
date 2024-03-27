@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace GarageManager.UserInterface
 {
-    internal class IUI
+    internal interface IUI
     {
+        void Print(string text);
 
-        public IUI() { }    
+        string GetInput();
     }
 }

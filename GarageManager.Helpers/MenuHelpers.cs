@@ -26,7 +26,6 @@ namespace GarageManager.Helpers
         public const string Colour = "1";
         public const string NumberOfWheels = "2";
         public const string TypeOfVehicle = "3";
-        //public const string Registration = "4";
 
         public static void ShowMainMenu()
         {
@@ -34,16 +33,6 @@ namespace GarageManager.Helpers
                  $"\n{Create}. Create a new garage" +
                  $"\n{Manage}. Manage the garage" +
                  $"\n{Quit}. Quit program");
-        }
-
-        //public static void GetInfoForNewGarage()
-        //{
-        //    Console.WriteLine("Please enter the following details");
-        //}
-
-        public static void ManageExistingGarage()
-        { 
-            string name = Util.AskForInput("Enter the name of the garage: ");
         }
 
         public static void ShowOperationMenu()
@@ -70,16 +59,14 @@ namespace GarageManager.Helpers
         public static void ShowSearchInstructions()
         {
             Console.WriteLine("\nYou may search for any combination of the following properties:");
-            //Console.WriteLine(
-                //$"\n{Colour}. Colour" +
-                //$"\n{NumberOfWheels}. Number of wheels" +
-                //$"\n{TypeOfVehicle}. Type of vehicle" +
-                //$"\n{Quit}. Quit program"
-                //);
+           
                 
             Util.PrintWithColour("[colour, numberOfWheels, typeOfVehicle]", ConsoleColor.Cyan);
 
-            Console.WriteLine("Enter the properties you want to search followed by a colon and the term you want to look for\n. Separate each search item by a comma.\n ");
+            Console.WriteLine(
+                "Enter the properties you want to search\n " +
+                "followed by a colon and the term you want to look for.\n " +
+                "Separate each search item by a comma.\n");
             Util.PrintWithColour("E.g. colour:blue, numberOfWheels:4", ConsoleColor.Cyan);
         }
     }

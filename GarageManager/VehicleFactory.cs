@@ -12,7 +12,6 @@ namespace GarageManager
 {
     public static class VehicleFactory
     {
-      
         public static IVehicle MakeVehicle(string type, string regNum, string color, uint wheels)
         {
             IVehicle newVehicle;
