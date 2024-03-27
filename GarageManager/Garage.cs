@@ -1,87 +1,48 @@
 ﻿using GarageManager.Helpers;
 using GarageManager.Vehicles;
 using System.Collections;
+using System.Linq;
+using System.Text;
 
 namespace GarageManager
 {
-    // internal class Garage<T> where T : IVehicle, IEnumerable<T>
     // HAVE IEnumerable<T> ON Garage OR ON IVehicle?? 
     public class Garage<T> : IEnumerable<T> where T : IVehicle
     {
         private readonly uint numberOfSpots;
         private T[] vehicles;
-        //public string garageName;
-        public List<int> availableSpots = new List<int>();
-        public string Name { get; set; }
-
-        // ******************************************************
-        public void printAvailableSpots()
-        {
-            Console.WriteLine(" Available spots in the list");
-            foreach (var item in availableSpots) 
-            {
-                Console.WriteLine($" {item}");
-            }
-            Console.WriteLine();
-        }
-        public void printGarage()
-        {
-            for (int i = 0; i < vehicles.Length; i++)
-            {
-                if (vehicles[i] == null)
-                    Console.WriteLine("Empty spot! {0}", i); 
-                else
-                    Console.WriteLine(vehicles[i].GetType().Name);
-            }
-        }
-        // ******************************************************
-
-        public int Length => vehicles.Length;
 
         public override string ToString()
         {
-            return base.ToString();
-        }
+            StringBuilder sb = new StringBuilder();
 
-        public void GetAvailableSpots(T[] vehicles)
-        {
             for (int i = 0; i < vehicles.Length; i++)
             {
-                if (vehicles[i] == null)
-                    availableSpots.Add(i);
-            };
+                if (vehicles[i] != null)
+                    sb.Append($"{vehicles[i].ToString()}\n");
+            }
+            return sb.ToString();
         }
 
-        public bool isFull => availableSpots.Count == 0;
-
-        public Garage(string name, uint capacity)
+        public Garage(uint capacity)
         {
-            //garageName = name;
             numberOfSpots = capacity;
             vehicles = new T[numberOfSpots];
-            Console.WriteLine($"length of array: {vehicles.Length}");
-            Name = name;
-            GetAvailableSpots(vehicles);
-            //printAvailableSpots();
 
-            Util.PrintWithColour($"{Name} garage created!", ConsoleColor.Green);
+            Util.PrintWithColour($"Garage created!", ConsoleColor.Green);
         }
         
-        public Garage(string name, uint capacity, List<IVehicle> toBepopluated)
+        public Garage(uint capacity, List<IVehicle> toBepopluated)
         {
-            //garageName = name;
             numberOfSpots = capacity;
             vehicles = new T[numberOfSpots];  
-            Name = name;
-            GetAvailableSpots(vehicles);
-            //printAvailableSpots();
 
             foreach (T vehicle in toBepopluated)
             {
                 AddVehicle(vehicle);
             }
 
-            Util.PrintWithColour($"{Name} garage created and vehicle(s) successfully added!", ConsoleColor.Green);
+            Util.PrintWithColour($"Garage created and vehicle(s) successfully added!", ConsoleColor.Green);
         }
 
         // Do a null check here?
@@ -96,30 +57,54 @@ namespace GarageManager
         // Explicit interface implementation
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public void AddVehicle(T vehicle) 
+        public bool SearchByRegistration(string registration)
         {
-                int firstAvailableSpot = availableSpots[0];
-                vehicles[firstAvailableSpot] = vehicle;
-                availableSpots.RemoveAt(0);
-            
-                Util.PrintWithColour("Vehicle was parked!", ConsoleColor.Green);
+            // Convert the registration number to uppercase
+            string upperCaseRegistration = registration.ToUpper();
 
-                // CHECK:
-                //Console.WriteLine("Available spots after parking: ");
-                //printAvailableSpots();
-                //Console.WriteLine("Garage: ");
-                //printGarage();
+            foreach (var item in vehicles)
+            {
+                if (item != null)
+                    if (item.RegistrationNumber == registration)
+                        return true;
+            }
+            return false;
         }
 
-        public void RemoveVehicle(T vehicle, string registrationNumber)
+        public void AddVehicle(T vehicle) 
         {
-            int locationOfVehicle = Array.IndexOf(vehicles, vehicle);
-            vehicles[locationOfVehicle] = default;
-            Util.PrintWithColour("Vehicle removed from garage!", ConsoleColor.Green);
-            
-            // CHECK:
-            Console.WriteLine("Garage: ");
-            printGarage();
+            int firstEmptySpot = Array.FindIndex(vehicles, veh => veh == null);
+
+            if (firstEmptySpot >= 0)
+            {
+                vehicles[firstEmptySpot] = vehicle;
+                Util.PrintWithColour("Vehicle was parked!", ConsoleColor.Green);
+            }
+            else 
+            {
+                Util.PrintWithColour("Sorry, the garage is full, could not park your vehicle!", ConsoleColor.DarkRed);
+            }
+        }
+
+        public void RemoveVehicle(string registrationNumber)
+        {
+            //int locationOfVehicle = Array.IndexOf(vehicles, vehicle);
+            bool vehicleInGarage = SearchByRegistration(registrationNumber);
+
+            if (vehicleInGarage)
+            {
+                int locationOfVeh = Array.FindIndex(vehicles, veh => veh.RegistrationNumber == registrationNumber);
+                Console.WriteLine();
+                if (locationOfVeh >= 0)
+                {
+                    vehicles[locationOfVeh] = default;
+                    Util.PrintWithColour("Vehicle removed from garage!", ConsoleColor.Green);
+                }
+                else
+                {
+                    Util.PrintWithColour("Sorry, that vehicle was not found, please check registration number and try again.", ConsoleColor.DarkRed);
+                }
+            }
         }
 
         public void FilterVehicles(Dictionary<string, string> validSearchTerms)
@@ -128,7 +113,6 @@ namespace GarageManager
             string typeOfVehicle = validSearchTerms["typeOfVehicle"];
             uint numberOfWheels;
             uint.TryParse(validSearchTerms["numberOfWheels"], out numberOfWheels);
-
 
             //    // Loop through the dictionary
             //    foreach (KeyValuePair<string, string> kvp in validSearchTerms)

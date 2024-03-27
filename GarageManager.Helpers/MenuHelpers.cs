@@ -32,7 +32,7 @@ namespace GarageManager.Helpers
         {
             Console.WriteLine(
                  $"\n{Create}. Create a new garage" +
-                 $"\n{Manage}. Manage an existing garage" +
+                 $"\n{Manage}. Manage the garage" +
                  $"\n{Quit}. Quit program");
         }
 

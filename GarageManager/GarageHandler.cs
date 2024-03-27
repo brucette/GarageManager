@@ -6,65 +6,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GarageManager.Helpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GarageManager
 {
     public class GarageHandler : IHandler
     {
-        public Dictionary<string, Garage<IVehicle>> garageDirectory = new Dictionary<string, Garage<IVehicle>>();
+        //public Dictionary<string, Garage<IVehicle>> garageDirectory = new Dictionary<string, Garage<IVehicle>>();
 
-        public void DisplayExistingGarages()
+        public Garage<IVehicle> CreateGarage(uint capacity)
         {
-            StringBuilder garages = new StringBuilder();    
-            garages.Append("[");
-
-            foreach (var item in garageDirectory)
-            { 
-                garages.Append($"Name: {item.Key}, ");
-            }
-
-            //if (garageDirectory.Count > 0)
-            //{
-            //    // Remove the trailing comma
-            //    garages.Length--; // Removes the last character (comma)
-            //}
-            garages.Append("]");
-
-            Util.PrintWithColour($"Current garages in the system: {garages.ToString()}", ConsoleColor.Cyan);
-        }
-
-        public Garage<IVehicle> CreateGarage(string name, uint capacity)
-        {
-            Garage<IVehicle> newGarage = new Garage<IVehicle>(name, capacity);
-            garageDirectory.Add(newGarage.Name, newGarage);
-            return newGarage;
+            return new Garage<IVehicle>(capacity);
         }
         
-        public Garage<IVehicle> CreateGarage(string name, uint capacity, List<IVehicle> toBePopulated)
+        public Garage<IVehicle> CreateGarage(uint capacity, List<IVehicle> toBePopulated)
         {
-            Garage<IVehicle> newGarage = new Garage<IVehicle>(name, capacity, toBePopulated);
-            garageDirectory.Add(newGarage.Name, newGarage);
-            return newGarage;
+            return new Garage<IVehicle>(capacity, toBePopulated);
         }
 
         // Park a vehicle
         public void Park(Garage<IVehicle> garage, Func<IVehicle> vehicle)
         {
-            if (garage.isFull)
-            {
-                Console.WriteLine("Sorry, the garage is full!");
-            }
-            else
-            {
                 IVehicle newVehicle = vehicle();
                 garage.AddVehicle(newVehicle);
-            }
         }
 
         // Get a vehicle
-        public void GetVehicle(Garage<IVehicle> garage, IVehicle vehicle)
+        public void GetVehicle(Garage<IVehicle> garage, string registration)
         {
-            garage.RemoveVehicle(vehicle, vehicle.RegistrationNumber);
+            garage.RemoveVehicle(registration);
         }
 
         // DisplayAllVehicles and their properties
@@ -74,9 +44,53 @@ namespace GarageManager
             {
                 if (vehicle != null)
                     Console.WriteLine(vehicle.ToString());
-                //Console.WriteLine($"Type: {vehicle.GetType().Name}");
             }
         }
+
+        public string CheckRegistrationNumber(Garage<IVehicle> garage)
+        {
+            string regNum = "";
+
+            while (regNum.Length != 6)
+            {
+                regNum = Util.AskForInput("Registration number: ");
+                if (regNum.Length != 6)
+                {
+                    Util.PrintWithColour("Registration number must be exactly 6 characters long, in the format \"ABC123\"", ConsoleColor.DarkRed);
+                }
+            }
+
+            while (true)
+            {
+                string firstHalf = regNum.Substring(0, 3).ToUpper();
+                string secondHalf = regNum.Substring(3);
+
+                bool firstHalfCorrect = char.IsLetter(firstHalf[0]) && char.IsLetter(firstHalf[1]) && char.IsLetter(firstHalf[2]);
+                bool secondHalfCorrect = char.IsDigit(secondHalf[0]) && char.IsDigit(secondHalf[1]) && char.IsDigit(secondHalf[2]);
+                bool correctFormat = firstHalfCorrect && secondHalfCorrect;
+
+                if (!correctFormat)
+                {
+                    Util.PrintWithColour($"Check your registration number, the format is incorrect", ConsoleColor.DarkRed);
+                }
+                else
+                {
+                    bool found = garage.SearchByRegistration(regNum);
+                    if (!found)
+                    {
+                        return regNum;
+                    }
+                    else
+                    {
+                        Util.PrintWithColour($"There is already a vehicle with that registration number parked in our garage.", ConsoleColor.DarkRed);
+
+                    }
+                }
+
+                regNum = Util.AskForInput("Registration number: ");
+            }
+        }
+
 
         // Search the garage for vehicles
         public void SearchGarage(Garage<IVehicle> garage)

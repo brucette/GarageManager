@@ -2,95 +2,91 @@
 using GarageManager.UserInterface;
 using GarageManager.Vehicles.SubcClasses;
 using GarageManager.Vehicles;
-using System.Threading.Channels;
-using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
-using System.Drawing;
-using GarageManager;
-using System.Security.Principal;
+using System;
 
 namespace GarageManager
 {
     internal class Manager
     {
-
-        // should this be static?
         private ConsoleUI ui = new ConsoleUI();
 
         GarageHandler garagehandler = new GarageHandler();
+        Garage<IVehicle> garage;
 
-        // ui.Get
-        //Console.WriteLine($"Type: {type} Color:{color} Wheels:{numberOfWheels} Reg: {registrationNumber}"); 
         public void Start()
         {
-            do
+            while (true)
             {
                 MenuHelpers.ShowMainMenu();
-                string input = Console.ReadLine();
-
-                //string input = ui.GetInput().ToUpper();
+                string input = ui.GetInput();
 
                 switch (input)
                 {
                     case MenuHelpers.Create:
-                        MakeNewGarage(garagehandler);
+                        garage = MakeNewGarage(garagehandler);
                         break;
                     case MenuHelpers.Manage:
-                        ManageExistingGarage(garagehandler);
+                        //** CHECK THAT GARAGE EXISTS**//
+                        ManageExistingGarage(garage, garagehandler);
                         break;
                     case MenuHelpers.Quit:
+                        ui.Print("Thank you and Goodbye!");
                         Environment.Exit(0);
                         break;
                     default:
-                        //ui.Print("Not a valid selection!");
-                        Console.WriteLine("Not a valid selection!");
+                        ui.Print("Not a valid selection!");
                         break;
                 }
-            } while (true);
+            }
         }
 
-        public static void MakeNewGarage(GarageHandler garagehandler)
+        public Garage<IVehicle> MakeNewGarage(GarageHandler garagehandler)
         {
-            //GarageHandler garagehandler = new GarageHandler();
+            ui.Print("\nPlease enter the following details");
 
-            Console.WriteLine("\nPlease enter the following details");
-
-            string name = Util.AskForInput("Enter a name for your garage: ");
             uint capacity = Util.AskForNumber("How many spots should the garage have?: ");
             string popluate = Util.AskForInput("Would you like to populate the garage with some vehicles? (y/n): ");
 
-            Garage<IVehicle> garage;
+            Garage<IVehicle> garage = null!;
 
             switch (popluate.ToLower())
             {
                 case "y":
                     //List<IVehicle> vehiclesToPopulate = GenerateVehicles();
                     List<IVehicle> vehiclesToPopulate = SeedVehicles();
-                    garage = garagehandler.CreateGarage(name, capacity, vehiclesToPopulate);
+                    garage = garagehandler.CreateGarage(capacity, vehiclesToPopulate);
                     break;
                 case "n":
-                    garage = garagehandler.CreateGarage(name, capacity);
+                    garage = garagehandler.CreateGarage(capacity);
                     break;
                 default:
                     break;
             }
+            return garage;
         }
 
-        public static IVehicle GetVehicle()
+        
+        public IVehicle GetVehicleDetails()
         {
+            ui.Print("\nSelect type of vehicle: ");
+
             MenuHelpers.GetVehicleType();
-            string type = Console.ReadLine();
+            string type = ui.GetInput();
 
             string color = Util.AskForInput("Color: ");
+
+            //** CHECK THAT NUMBER != EXIST **//
+            //string registrationNumber = Util.AskForInput("Registration number: ");
+            string registrationNumber = garagehandler.CheckRegistrationNumber(garage);
             uint numberOfWheels = Util.AskForNumber("Number of wheels: ");
 
-            IVehicle newVehicle = VehicleFactory.MakeVehicle(type, color, numberOfWheels);
+            IVehicle newVehicle = VehicleFactory.MakeVehicle(type, registrationNumber, color, numberOfWheels);
 
             return newVehicle;
         }
 
         // If user is to enter vehicles
-        public static List<IVehicle> GenerateVehicles()
+        public List<IVehicle> GenerateVehicles()
         {
             uint numberOfVehicles = Util.AskForNumber("How many vehicles?: ");
             List<IVehicle> vehiclesToAdd = new List<IVehicle>();
@@ -98,13 +94,13 @@ namespace GarageManager
             for (int i = 0; i < numberOfVehicles; i++)
             {
                 Console.WriteLine($"Select type for vehicle {i + 1}:");
-                IVehicle newVehicle = GetVehicle();
+                IVehicle newVehicle = GetVehicleDetails();
                 vehiclesToAdd.Add(newVehicle);
             }
             return vehiclesToAdd;
         }
 
-        public static List<IVehicle> SeedVehicles()
+        public List<IVehicle> SeedVehicles()
         {
             List<IVehicle> vehiclesToAdd = new List<IVehicle>()
             {
@@ -122,32 +118,27 @@ namespace GarageManager
             return vehiclesToAdd;
         }
 
-    public static void ManageExistingGarage(GarageHandler garagehandler)
+        public void ManageExistingGarage(Garage<IVehicle> garage, GarageHandler garagehandler)
         {
-            Console.WriteLine("Enter the name of the garage you want to manage: ");
-
-            garagehandler.DisplayExistingGarages();
-            string garageName = Console.ReadLine();
-            Garage<IVehicle> garage = garagehandler.garageDirectory[garageName];
-
-            //Console.WriteLine($"{garageName} it is!");
+            ui.Print("\nSelect an operation: ");
 
             MenuHelpers.ShowOperationMenu();
-            string operation = Console.ReadLine();
-            //Console.WriteLine($"{operation} it is!");
+            string operation = ui.GetInput();
 
             switch (operation)
             {
                 case MenuHelpers.Park:
-                    garagehandler.Park(garage, GetVehicle);
+                    garagehandler.Park(garage, GetVehicleDetails);
                     break;
                 case MenuHelpers.Get:
+                    string regNum = Util.AskForInput("Registration number: ");
+                    garagehandler.GetVehicle(garage, regNum);
                     break;
                 case MenuHelpers.View:
                     garagehandler.DisplayAllVehicles(garage);
                     break;
                 case MenuHelpers.Search:
-                    garagehandler.SearchGarage(garage);
+                    //garagehandler.SearchGarage();
                     break;
                 default:
                     break;

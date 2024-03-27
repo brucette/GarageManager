@@ -16,7 +16,6 @@ namespace GarageManager.Vehicles.BaseClass
         public string RegistrationNumber { get; set; }
         public string Colour { get; set; }
         public uint NumberOfWheels { get; set; }
-        //public int MaxSpeed { get; set; }
 
         public Vehicle(string registrationNumber, string colour, uint numberOfWheels)
         {

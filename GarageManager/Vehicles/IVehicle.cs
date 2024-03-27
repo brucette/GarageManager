@@ -11,6 +11,5 @@ namespace GarageManager.Vehicles
         string RegistrationNumber { get; set; }
         string Colour { get; set; }
         uint NumberOfWheels { get; set; }
-        //int MaxSpeed { get; set; }
     }
 }

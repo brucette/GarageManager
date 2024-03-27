@@ -10,11 +10,11 @@ namespace GarageManager
 {
     internal interface IHandler
     {
-        public Garage<IVehicle> CreateGarage(string name, uint capacity);
+        public Garage<IVehicle> CreateGarage(uint capacity);
 
         void Park(Garage<IVehicle> garage, Func<IVehicle> vehicle);
 
-        void GetVehicle(Garage<IVehicle> garage, IVehicle vehicle);
+        void GetVehicle(Garage<IVehicle> garage, string registration);
 
         void DisplayAllVehicles(Garage<IVehicle> garage);
 
